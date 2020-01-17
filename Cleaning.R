@@ -76,7 +76,7 @@ sores[c(2,3)] <- sapply(sores[c(2,3)], as.character)
 
 procs_dft_uat <- function(proj_d, proj_u){
   
-  destination$Parent[grepl(paste(proj_d), destination$Parent) & grepl("UAT issue", destination$ParentType)] <- paste(proj_u)
+  destination$Parent[grepl(paste(proj_d), destination$Parent) & grepl("UAT issue", destination$ParentType)] <<- paste(proj_u)
   sores$Parent[grepl(paste(proj_d), sores$Parent) & grepl("UAT issue", sores$ParentType)] <<- paste(proj_u)
   df$Project[grepl(paste(proj_d), df$Project) & grepl("UAT issue", df$Type)] <<- paste(proj_u)
   

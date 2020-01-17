@@ -139,13 +139,66 @@ xl_sheet <- function(a, p, w,perc, month, monthperc,  q, qperc){
 xl_sheet(a= ALL_totals , p = ALL_perc, w =  ALL_weekly_avg, perc = ALL_weekly_perc, month = ALL_monthly_avg,
         monthperc =  ALL_monthly_perc, q = ALL_quarterly_avg, qperc = ALL_quarterly_perc)
 
-xl_sheet(a =  avl_monthly, p = pay_monthly, r = rost_monthly, inter = internal_monthly, sheet_name = sheet2)
-xl_sheet(a =  avl_quarterly, p = pay_quarterly, r = rost_quarterly, inter = internal_quarterly, sheet_name = sheet1)
+
+saveWorkbook(wb, file = "KPI_processes.xlsx")
 
 ## Save workbook to excel file 
 saveWorkbook(wb, file = "ALL.xlsx")
-
 write.csv(DFT_anomalies, file = "DFT_anomalies.csv", row.names = FALSE)
 
-y <- planned_time
-y[,c(8,9)] <- round(y[,c(8,9)], digits = 1)
+
+wb <- createWorkbook()
+sheetone <- createSheet(wb,"Monthly Totals")
+sheet1 <- createSheet(wb,"Quarterly Totals")
+
+
+
+currRow <- 1
+xl_sheet <- function(monthly, qrtly){
+  
+  for(i in 1:length(monthly)){
+    
+    cs <- CellStyle(wb) + Font(wb, isBold=TRUE) + Border(position=c("BOTTOM", "LEFT",
+                                                                    "TOP", "RIGHT"))
+
+    addDataFrame(monthly[[i]],
+                 sheet= sheetone,
+                 startRow=currRow,
+                 row.names=FALSE,
+                 colStyle= Border(position=c("BOTTOM", "LEFT",
+                                             "TOP", "RIGHT")),
+                 colnamesStyle = cs)
+    
+    
+    
+    currRow <- currRow + nrow(monthly[[i]]) + 4 
+  }
+  
+  for(i in 1:length(qrtly)){
+    
+    cs <- CellStyle(wb) + Font(wb, isBold=TRUE) + Border(position=c("BOTTOM", "LEFT",
+                                                                    "TOP", "RIGHT"))
+    cs1 <-Border(position=c("BOTTOM", "LEFT",
+                                              "TOP", "RIGHT"))
+    
+    
+    addDataFrame(qrtly[[i]],
+                 sheet= sheet1,
+                 startRow=currRow,
+                 row.names=FALSE,
+                 rownamesStyle = cs1, 
+                 colnamesStyle = cs)
+    
+    
+    currRow <- currRow + nrow(qrtly[[i]]) + 4 
+  }
+  
+  
+}
+
+xl_sheet(monthly = KPIS_Processes$ALL_monthly_totals, qrtly = KPIS_Processes$ALL_quarterly_totals)
+
+saveWorkbook(wb, file = "Dump_MonthQuarter_totals.xlsx")
+
+
+
